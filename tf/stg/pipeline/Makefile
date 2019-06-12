@@ -9,20 +9,17 @@ all:
 		* destroy \
 "
 
-get:
-	@terraform get -update
-
-init: get
+init:
 	@terraform init
 
 upload-lambda:
 	@../../scripts/upload_lambda.sh
 
-plan: get
+plan: init
 	@terraform plan -var "stack_env=${STACK_ENV}"
 
-apply: get
+apply: init
 	@terraform apply -var "stack_env=${STACK_ENV}"
 
-destroy: get
+destroy: init
 	@terraform destroy -var "stack_env=${STACK_ENV}"
