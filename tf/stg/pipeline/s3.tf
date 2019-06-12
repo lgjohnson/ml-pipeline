@@ -1,6 +1,6 @@
 #s3 bucket for training data
 data "aws_s3_bucket" "log_bucket" {
-  bucket = "lgjohnson-ml-pipeline-lambda-${var.stack_env}"
+  bucket = "lgjohnson-ml-pipeline-logs"
 }
 
 resource "aws_s3_bucket" "training_bucket" {
@@ -12,7 +12,7 @@ resource "aws_s3_bucket" "training_bucket" {
     }
 
     logging {
-        target_bucket = "${aws_s3_bucket.log_bucket.id}"
+        target_bucket = "${data.aws_s3_bucket.log_bucket.id}"
         target_prefix = "log/"
     }
 

@@ -1,3 +1,6 @@
+data "aws_s3_bucket" "lambdas_bucket" {
+    bucket = "lgjohnson-ml-pipeline-lambda"
+}
 # Lambda that triggers model retraining
 
 #lambda function
@@ -5,8 +8,10 @@ resource "aws_lambda_function" "training_lambda" {
     function_name = "${local.training_lambda_function_name}"
     handler = "train_trigger.handler"
     runtime = "nodejs10.x"
-    s3_bucket = "${aws_s3_bucket.lambdas_bucket.bucket}"
+    
+    s3_bucket = "${data.aws_s3_bucket.lambdas_bucket.bucket}"
     s3_key = "lambda/train_trigger.zip"
+
     role = "${aws_iam_role.training_lambda_exec_role.arn}"
     depends_on = [
         "aws_iam_role_policy_attachment.lambda_logs",
@@ -14,7 +19,7 @@ resource "aws_lambda_function" "training_lambda" {
     ]
 }
 
-#IAM role for lambda function
+#iam role for lambda function
 resource "aws_iam_role" "training_lambda_exec_role" {
     name = "lgjohnson_ml_pipeline_training_lambda_${var.stack_env}"
     assume_role_policy = <<EOF

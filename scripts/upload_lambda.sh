@@ -5,19 +5,23 @@ set -eo pipefail
 #   zips and uploads a lambda job to S3
 #   LAMBDA_S3_BUCKET must match the name of the bucket that lambda jobs are uploaded to
 # Example:
-#
+#   ./upload_lambda.sh
 
-#explicitly catch if STACK_ENV is undefined
-if [[ -z "${STACK_ENV}" ]]; then
-  echo ERROR: STACK_ENV not defined. This script should only be run by a Makefile through which STACK_ENV will be defined.
-  exit 1
-fi
 
-#zip up lambda function and upload to S3
+# The following vars must match the s3uri used in the pipeline lambda terraform
+LAMBDA_S3_BUCKET=lgjohnson-ml-pipeline-lambda
+LAMBDA_S3_KEY=lambda/train_trigger.zip
+
+# constants
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" #abs location of this script
 TEMP_ZIP=/tmp/train_trigger.zip
-LAMBDA_S3_BUCKET=lgjohnson-ml-pipeline-lambda-${STACK_ENV}
-LAMBDA_S3_URI=s3://${LAMBDA_S3_BUCKET}/lambda/train_trigger.zip
+LAMBDA_S3_URI="s3://${LAMBDA_S3_BUCKET}/${LAMBDA_S3_KEY}"
 
-zip -r $TEMP_ZIP train_trigger.js
-aws s3 cp $TEMP_ZIP $S3_URI
-rm $TEMP_ZIP
+echo "zipping lambda function."
+zip -q -j -r $TEMP_ZIP "${DIR}/train_trigger.js"
+
+echo "uploading lambda function to ${LAMBDA_S3_URI}."
+aws s3 cp --quiet $TEMP_ZIP $LAMBDA_S3_URI
+#rm $TEMP_ZIP
+
+echo "lambda function uploaded."

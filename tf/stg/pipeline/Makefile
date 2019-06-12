@@ -12,13 +12,13 @@ all:
 init:
 	@terraform init
 
-upload-lambda:
-	@../../scripts/upload_lambda.sh
+upload_lambda:
+	@../../../scripts/upload_lambda.sh "${STACK_ENV}"
 
 plan: init
 	@terraform plan -var "stack_env=${STACK_ENV}"
 
-apply: init
+apply: init upload_lambda
 	@terraform apply -var "stack_env=${STACK_ENV}"
 
 destroy: init
