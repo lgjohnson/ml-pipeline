@@ -31,3 +31,9 @@ Nice to have:
 
 - TFX integration
 - Actual GG model
+
+
+## Set-up
+
+1. Download the following CLI tools: `zip`, `aws`, `terraform`.
+2. 
