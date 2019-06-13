@@ -1,7 +1,18 @@
 #!/usr/bin/env node
 
-exports.handler = function(event, context, callback) {
-    console.log('Event: ', JSON.stringify(event, null, '\t'));
-    console.log('Context: ', JSON.stringify(context, null, '\t'));
-    callback(null);
+const aws = require('aws-sdk');
+const s3 = new aws.S3({signatureVersion: 'v4'});
+
+exports.handler = (event, context, callback) => {
+
+    const key = event.Records[0].s3.object.key;
+    console.log('Image uploaded: ', key);
+
+    callback(null, {
+        statusCode: '201',
+        headers: {
+            'training image': key
+        },
+        body: `${key} was uploaded.`
+    });
 };

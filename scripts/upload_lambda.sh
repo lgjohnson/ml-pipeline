@@ -22,6 +22,6 @@ zip -q -j -r $TEMP_ZIP "${DIR}/train_trigger.js"
 
 echo "uploading lambda function to ${LAMBDA_S3_URI}."
 aws s3 cp --quiet $TEMP_ZIP $LAMBDA_S3_URI
-#rm $TEMP_ZIP
+rm $TEMP_ZIP
 
 echo "lambda function uploaded."
