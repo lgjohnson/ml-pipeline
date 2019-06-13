@@ -43,12 +43,6 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
     }
 }
 
-
-
-
-
-#S3 ACCESS
-
 #iam role for lambda function
 resource "aws_iam_role" "training_lambda_exec_role" {
     name = "lgjohnson_ml_pipeline_training_lambda_${var.stack_env}"
@@ -67,37 +61,6 @@ resource "aws_iam_role" "training_lambda_exec_role" {
 }
 EOF
 }
-
-#iam policy for s3 access
-resource "aws_iam_policy" "training_lambda_s3_access" {
-    name = "training_lambda_s3_access_${var.stack_env}"
-    policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": [
-                "s3:GetObject",
-                "s3:GetObjectVersion"
-            ],
-            "Resource": [
-                "arn:aws:s3:::${aws_s3_bucket.training_bucket.bucket}/*"
-            ],
-            "Effect": "Allow"
-        }
-    ]
-}
-EOF
-}
-
-#attach s3 policy to lambda iam role
-
-resource "aws_iam_role_policy_attachment" "lambda_s3" {
-    role = "${aws_iam_role.training_lambda_exec_role.name}"
-    policy_arn = "${aws_iam_policy.training_lambda_s3_access.arn}"
-}
-
-
 
 
 
