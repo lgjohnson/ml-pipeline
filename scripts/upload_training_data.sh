@@ -29,3 +29,4 @@ for YEAR in $(seq $START_YEAR $END_YEAR)
     done
 
 echo "all training data successfully uploaded"
+
