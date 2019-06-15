@@ -7,8 +7,8 @@ data "aws_s3_bucket" "logs_bucket" {
 
 resource "aws_emr_cluster" "training_cluster" {
     name = "training_cluster"
-    release_label = "emr-4.6.0"
-    applications = ["Spark"]
+    release_label = "emr-5.24.0"
+    applications = ["Spark", "Hadoop", "Livy"]
     service_role = "${aws_iam_role.iam_training_emr_service_role.arn}"
     autoscaling_role = "EMR_AutoScaling_DefaultRole"
 
