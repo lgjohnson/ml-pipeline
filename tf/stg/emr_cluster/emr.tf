@@ -7,7 +7,7 @@ data "aws_s3_bucket" "logs_bucket" {
 
 resource "aws_emr_cluster" "training_cluster" {
     name = "training_cluster"
-    release_label = "emr-5.24.0"
+    release_label = "emr-4.6.0"
     applications = ["Spark"]
 
     log_uri = "s3://${data.aws_s3_bucket.logs_bucket.bucket}/training_cluster/"
@@ -17,10 +17,10 @@ resource "aws_emr_cluster" "training_cluster" {
     keep_job_flow_alive_when_no_steps = true
 
     ec2_attributes {
-        subnet_id = "${}"
-        emr_managed_master_security_group = "${}"
-        emr_managed_slave_security_group = "${}"
-        instance_profile = "${}"
+        subnet_id = "${aws_subnet.ml_pipeline_subnet.id}"
+        emr_managed_master_security_group = "${aws_security_group.allow_access.id}"
+        emr_managed_slave_security_group = "${aws_security_group.allow_access.id}"
+        instance_profile = "${aws_iam_instance_profile.training_emr_profile.arn}"
     }
 
     master_instance_group {
@@ -109,7 +109,7 @@ EOF
         }
     ]
 EOF
-    service_role = "${}"
+    service_role = "${aws_iam_role.iam_training_emr_service_role.arn}"
 
     step {
         action_on_failure = "TERMINATE_CLUSTER"
@@ -129,8 +129,6 @@ EOF
     service_role = "${aws_iam_role.iam_training_emr_service_role.arn}"
 
 }
-
-
 
 # IAM ROLES
 
