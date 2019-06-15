@@ -9,6 +9,8 @@ resource "aws_emr_cluster" "training_cluster" {
     name = "training_cluster"
     release_label = "emr-4.6.0"
     applications = ["Spark"]
+    service_role = "${aws_iam_role.iam_training_emr_service_role.arn}"
+    autoscaling_role = "EMR_AutoScaling_DefaultRole"
 
     log_uri = "s3://${data.aws_s3_bucket.logs_bucket.bucket}/training_cluster/"
 
@@ -109,7 +111,6 @@ EOF
         }
     ]
 EOF
-    service_role = "${aws_iam_role.iam_training_emr_service_role.arn}"
 
     step {
         action_on_failure = "TERMINATE_CLUSTER"
@@ -125,8 +126,6 @@ EOF
     lifecycle {
         ignore_changes = ["step"]
     }
-
-    service_role = "${aws_iam_role.iam_training_emr_service_role.arn}"
 
 }
 
@@ -155,7 +154,7 @@ EOF
 
 resource "aws_iam_role_policy" "iam_training_emr_service_policy" {
     name = "iam_training_emr_service_policy"
-    role = "${aws_iam_role.iam_training_emr_service_role}"
+    role = "${aws_iam_role.iam_training_emr_service_role.id}"
 
     policy = <<EOF
 {

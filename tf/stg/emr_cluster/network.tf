@@ -16,6 +16,11 @@ resource "aws_internet_gateway" "ml_pipeline_gw" {
 
 resource "aws_route_table" "ml_pipeline_route_table" {
     vpc_id = "${aws_vpc.ml_pipeline_vpc.id}"
+
+    route {
+        cidr_block = "0.0.0.0/0"
+        gateway_id = "${aws_internet_gateway.ml_pipeline_gw.id}"
+    }
 }
 
 resource "aws_main_route_table_association" "ml_pipeline_route_table_association" {
@@ -35,7 +40,7 @@ resource "aws_security_group" "allow_access" {
         to_port = 0
         protocol = "-1"
 
-        #cidr_blocks = ""
+        cidr_blocks = ["0.0.0.0/0"]
     }
 
     egress {
