@@ -31,7 +31,7 @@ resource "aws_emr_cluster" "training_cluster" {
 
     core_instance_group {
         instance_type = "c4.large"
-        instance_count = 2
+        instance_count = 4
 
         #specifying bid_price turns the EMR cluster into a spot cluster
         # bid_price = "0.30"
